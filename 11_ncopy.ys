@@ -1,0 +1,29 @@
+
+
+	xorq %rax,%rax		# count = 0;
+	andq %rdx,%rdx		# len <= 0?
+	jg Loop		# if so, goto Done:
+	jmp Done
+Loop:	
+	mrmovq (%rdi), %r10	# read val from src...
+	iaddq $-1,%rdx
+	rmmovq %r10, (%rsi)	# ...and store it to dst
+
+	andq %r10, %r10		# val <= 0?
+	jle Npos		# if so, goto Npos:
+	iaddq $1, %rax		# count++
+Npos:	
+	iaddq $8, %rdi		# src++
+	
+	iaddq $8,%rsi		# len > 0?
+
+	andq %rdx,%rdx
+
+
+
+	jg Loop
+
+Done:
+
+	ret
+
