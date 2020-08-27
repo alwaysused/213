@@ -20,11 +20,11 @@ ncopy:
 	andq %rdx,%rdx		# len <= 0?
 	jle Done		# if so, goto Done:
 
-	iaddq $-2,%rdx		# calculate len - 4
+	iaddq $-3,%rdx		# calculate len - 4
 	jg add1                 # if len >= 4 goto Loop
 
 RESTT:
-	iaddq $2, %rdx          # restore the old value of len
+	iaddq $3, %rdx          # restore the old value of len
 
 
 
@@ -52,7 +52,7 @@ Npos:
 
 add1:
 	mrmovq (%rdi), %r10
-	iaddq $16,%rdi
+	iaddq $24,%rdi
 	rmmovq %r10,(%rsi)
 	andq %r10,%r10
 	jle add2
@@ -60,16 +60,25 @@ add1:
 
 
 add2:
-	mrmovq -8(%rdi), %r11
-	iaddq $16,%rsi
+	mrmovq -16(%rdi), %r11
+	
+	mrmovq -8(%rdi), %r10
+	rmmovq %r11,8(%rsi)
+	iaddq $24,%rsi
 
-	rmmovq %r11,-8(%rsi)
 	andq %r11,%r11
 
-	jle DecreasePtr
+	jle add3
 	iaddq $1,%rax
+add3:
+
+rmmovq %r10,-8(%rsi)
+andq %r10,%r10
+
+jle DecreasePtr
+iaddq $1,%rax
 DecreasePtr:
-	iaddq $-2,%rdx
+	iaddq $-3,%rdx
 	jg add1
 	jmp RESTT
 
