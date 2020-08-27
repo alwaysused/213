@@ -1,0 +1,21 @@
+4层
+
+Average CPE	8.83
+Score	33.3/60.0
+
+
+5层
+Average CPE	8.77
+Score	34.6/60.0
+6层
+Average CPE	8.76
+Score	34.7/60.0
+最后看到 他删掉前面三行，
+	#xorq %rax,%rax		# count = 0;
+	#andq %rdx,%rdx		# len <= 0?
+	#jle Done		# if so, goto Done:
+
+	iaddq $-6,%rdx		# calculate len - 4
+	jg add1                 # if len >= 4 goto Loop
+
+	拿到了42分，其实后面两行确实该删，但是……第一行……

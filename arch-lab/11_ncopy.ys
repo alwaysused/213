@@ -16,15 +16,15 @@ ncopy:
 ##################################################################
 # You can modify this portion
 	# Loop header
-	xorq %rax,%rax		# count = 0;
-	andq %rdx,%rdx		# len <= 0?
-	jle Done		# if so, goto Done:
+	#xorq %rax,%rax		# count = 0;
+	#andq %rdx,%rdx		# len <= 0?
+	#jle Done		# if so, goto Done:
 
-	iaddq $-3,%rdx		# calculate len - 4
+	iaddq $-6,%rdx		# calculate len - 4
 	jg add1                 # if len >= 4 goto Loop
 
 RESTT:
-	iaddq $3, %rdx          # restore the old value of len
+	iaddq $6, %rdx          # restore the old value of len
 
 
 
@@ -52,7 +52,7 @@ Npos:
 
 add1:
 	mrmovq (%rdi), %r10
-	iaddq $24,%rdi
+	iaddq $48,%rdi
 	rmmovq %r10,(%rsi)
 	andq %r10,%r10
 	jle add2
@@ -60,11 +60,10 @@ add1:
 
 
 add2:
-	mrmovq -16(%rdi), %r11
+	mrmovq -40(%rdi), %r11
 	
-	mrmovq -8(%rdi), %r10
+	mrmovq -32(%rdi), %r10
 	rmmovq %r11,8(%rsi)
-	iaddq $24,%rsi
 
 	andq %r11,%r11
 
@@ -72,13 +71,42 @@ add2:
 	iaddq $1,%rax
 add3:
 
-rmmovq %r10,-8(%rsi)
+rmmovq %r10,16(%rsi)
+mrmovq -24(%rdi), %r11
+
 andq %r10,%r10
 
-jle DecreasePtr
+jle add4
 iaddq $1,%rax
+
+add4:
+
+	rmmovq %r11 ,24(%rsi)
+	mrmovq -16(%rdi), %r10
+	andq %r11,%r11
+
+	jle add5
+	iaddq $1,%rax
+add5:
+
+	rmmovq %r10 ,32(%rsi)
+	mrmovq -8(%rdi), %r11
+	andq %r10,%r10
+
+	jle add6
+	iaddq $1,%rax
+add6:
+
+	rmmovq %r11 ,40(%rsi)
+
+	andq %r11,%r11
+
+	jle DecreasePtr
+	iaddq $1,%rax
+
 DecreasePtr:
-	iaddq $-3,%rdx
+	iaddq $48,%rsi
+	iaddq $-6,%rdx
 	jg add1
 	jmp RESTT
 
